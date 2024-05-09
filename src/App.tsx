@@ -13,15 +13,13 @@ const App = () => {
     <Router>
       <Layout />
       <Routes>
-        <Route path="/" element={<Home />} errorElement={<Error />} />
-        <Route
-          path="/dashboard"
-          element={<Dashboard />}
-          errorElement={<Error />}
-        />
-        <Route path="/login" element={<Login />} errorElement={<Error />} />
-        <Route path="/signup" element={<SignUp />} errorElement={<Error />} />
-        <Route path="/error" element={<Error />} errorElement={<Error />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/error" element={<Error />} />
+
+        <Route path="/*" element={<Error />} />
       </Routes>
     </Router>
   );
