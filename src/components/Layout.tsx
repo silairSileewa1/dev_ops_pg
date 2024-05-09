@@ -1,3 +1,5 @@
+import { MouseEvent, useState } from "react";
+import { NavLink } from "react-router-dom";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -11,8 +13,6 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { MouseEvent, useState } from "react";
-import { NavLink } from "react-router-dom";
 
 import "./Layout.css";
 
