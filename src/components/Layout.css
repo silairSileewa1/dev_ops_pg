@@ -1,0 +1,10 @@
+.app-bar-nav-links {
+    background-color: none;
+    color: white;
+    text-decoration: none;
+}
+
+.app-bar-nav-links-active {
+    font-weight: bold;
+    border-bottom: white 2px solid;
+}
