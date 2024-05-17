@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -11,6 +12,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 export default function SignUp() {
+  const navigate = useNavigate();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -22,27 +25,42 @@ export default function SignUp() {
       password: data.get("password"),
     };
 
-    try{
-      const response = await
-      // NOTE change this later with real endpoint in Springboot
-      fetch('https://psychic-pancake-5ppwvpjrx4wfvpwv-8080.app.github.dev/user',{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const response = await fetch(
+        "https://fuzzy-barnacle-744g7465p67hx7jx-8080.app.github.dev/user",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // Check if the content type is JSON
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const result = await response.json();
+        console.log(result);
+        if (result.message === "Success!") {
+          navigate("/dashboard");
+        }
+      } else {
+        // It's not JSON, treat it as text
+        const resultText = await response.text();
+        console.log(resultText);
+        if (resultText.trim() === "Success!") {
+          navigate("/dashboard");
+        }
+      }
+    } catch (error) {
+      console.error("There was a problem with the fetch operation: ", error);
     }
-
-    const result = await response.json();
-    console.log(result);
-  } catch (error) {
-    console.error('There was a problem with the fetch operation: ', error);
-  }
-};
+  };
 
   return (
     <Container component="main" maxWidth="xs">
