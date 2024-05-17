@@ -11,14 +11,38 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const formData = {
+      firstName: data.get("firstName"),
+      lastName: data.get("lastName"),
       email: data.get("email"),
+      username: data.get("username"),
       password: data.get("password"),
+    };
+
+    try{
+      const response = await
+      // NOTE change this later with real endpoint in Springboot
+      fetch('https://psychic-pancake-5ppwvpjrx4wfvpwv-8080.app.github.dev/user',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
     });
-  };
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result);
+  } catch (error) {
+    console.error('There was a problem with the fetch operation: ', error);
+  }
+};
 
   return (
     <Container component="main" maxWidth="xs">
