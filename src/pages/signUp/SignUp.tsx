@@ -11,7 +11,7 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-export default function SignUp() {
+export default function SignUp({ user }: { user: any }) {
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -27,14 +27,14 @@ export default function SignUp() {
 
     try {
       const response = await fetch(
-        "https://fuzzy-barnacle-744g7465p67hx7jx-8080.app.github.dev/user",
+        "https://fictional-space-enigma-rp6qq77vg5jfpq4j-8080.app.github.dev/user",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       if (!response.ok) {
@@ -61,6 +61,12 @@ export default function SignUp() {
       console.error("There was a problem with the fetch operation: ", error);
     }
   };
+
+  React.useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user]);
 
   return (
     <Container component="main" maxWidth="xs">

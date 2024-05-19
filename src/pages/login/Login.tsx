@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -13,15 +14,54 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 
-export default function Login() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+export default function Login({ user, setUser }: { user: any; setUser: any }) {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get("email"),
       password: data.get("password"),
     });
+
+    const userCreds = {
+      email: data.get("email"),
+      password: data.get("password"),
+    };
+
+    try {
+      const response = await fetch(
+        "https://fictional-space-enigma-rp6qq77vg5jfpq4j-8080.app.github.dev/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userCreds),
+        },
+      );
+
+      const res = await response
+        .json()
+        .then((data) => ({ status: response?.status, body: data }));
+      if (res.status !== 200) {
+        console.log("Error!", res.body.message);
+      } else {
+        localStorage.setItem("User", res.body.users[0]);
+        setUser(res.body.users[0]);
+        navigate("/dashboard");
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
+
+  React.useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user]);
 
   return (
     <Container component="main" maxWidth="xs">

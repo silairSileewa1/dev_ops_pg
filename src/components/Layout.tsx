@@ -1,5 +1,5 @@
-import { MouseEvent, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { MouseEvent, useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -16,13 +16,21 @@ import {
 
 import "./Layout.css";
 
-const Layout = () => {
+const Layout = ({ user, setUser }: { user: any; setUser: any }) => {
+  const navigate = useNavigate();
   const [anchorNav, setAnchorNav] = useState<null | HTMLElement>(null);
   const openMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorNav(event.currentTarget);
   };
   const closeMenu = () => {
     setAnchorNav(null);
+  };
+
+  const signOut = () => {
+    console.log("Signing out");
+    localStorage.clear();
+    setUser(null);
+    navigate("/");
   };
 
   return (
@@ -58,45 +66,56 @@ const Layout = () => {
               Home
             </NavLink>
           </Button>
-          <Button color="inherit">
-            <NavLink
-              className={({ isActive }) =>
-                [
-                  "app-bar-nav-links",
-                  isActive ? "app-bar-nav-links-active" : "",
-                ].join(" ")
-              }
-              to={"/dashboard"}
-            >
-              Dashboard
-            </NavLink>
-          </Button>
-          <Button color="inherit">
-            <NavLink
-              className={({ isActive }) =>
-                [
-                  "app-bar-nav-links",
-                  isActive ? "app-bar-nav-links-active" : "",
-                ].join(" ")
-              }
-              to={"/signup"}
-            >
-              Sign Up
-            </NavLink>
-          </Button>
-          <Button color="inherit">
-            <NavLink
-              className={({ isActive }) =>
-                [
-                  "app-bar-nav-links",
-                  isActive ? "app-bar-nav-links-active" : "",
-                ].join(" ")
-              }
-              to={"/login"}
-            >
-              Login
-            </NavLink>
-          </Button>
+          {user && (
+            <Button color="inherit">
+              <NavLink
+                className={({ isActive }) =>
+                  [
+                    "app-bar-nav-links",
+                    isActive ? "app-bar-nav-links-active" : "",
+                  ].join(" ")
+                }
+                to={"/dashboard"}
+              >
+                Dashboard
+              </NavLink>
+            </Button>
+          )}
+          {!user && (
+            <Button color="inherit">
+              <NavLink
+                className={({ isActive }) =>
+                  [
+                    "app-bar-nav-links",
+                    isActive ? "app-bar-nav-links-active" : "",
+                  ].join(" ")
+                }
+                to={"/signup"}
+              >
+                Sign Up
+              </NavLink>
+            </Button>
+          )}
+          {!user && (
+            <Button color="inherit">
+              <NavLink
+                className={({ isActive }) =>
+                  [
+                    "app-bar-nav-links",
+                    isActive ? "app-bar-nav-links-active" : "",
+                  ].join(" ")
+                }
+                to={"/login"}
+              >
+                Login
+              </NavLink>
+            </Button>
+          )}
+          {user && (
+            <Button color="inherit" onClick={() => signOut()}>
+              Sign Out
+            </Button>
+          )}
         </Box>
         <Box sx={{ display: { xs: "flex", md: "none" } }}>
           <IconButton
