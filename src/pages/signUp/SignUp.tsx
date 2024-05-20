@@ -10,11 +10,11 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 export default function SignUp({ user }: { user: any }) {
   const navigate = useNavigate();
-  const [accountCreated, setAccountCreated] = React.useState(false);
-  const [showUI, setShowUI] = React.useState(true);
+  const [isSignUpSuccess, setIsSignUpSuccess] = React.useState(false);
   const [message, setMessage] = React.useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -30,7 +30,7 @@ export default function SignUp({ user }: { user: any }) {
 
     try {
       const response = await fetch(
-        "https://opulent-giggle-rvvj7vq6vwgfwxj7-8080.app.github.dev/user",
+        "https://fictional-space-enigma-rp6qq77vg5jfpq4j-8080.app.github.dev/user",
         {
           method: "POST",
           headers: {
@@ -45,13 +45,12 @@ export default function SignUp({ user }: { user: any }) {
       }
 
       const result = await response.text();
-      console.log(result);
       setMessage(result);
       if (result === "Success!") {
-        setAccountCreated(true);
+        setIsSignUpSuccess(true)
         setTimeout(() => {
-          setShowUI(false);
-        }, 2000); // Show success message for 2 seconds
+          navigate("/login")
+        }, 5000)
       }
     } catch (error) {
       console.error("There was a problem with the fetch operation: ", error);
@@ -59,20 +58,28 @@ export default function SignUp({ user }: { user: any }) {
   };
 
   React.useEffect(() => {
-    if (!showUI || user) {
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000); // Redirect to login page after 1 second
+    if (user) {
+      navigate("/dashboard")
     }
-  }, [user, showUI]);
+  }, [user]);
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      {showUI ? (
+      {isSignUpSuccess && (
+          <div style={{ display: "flex", alignItems: "center", gap: "20px",color: "green", borderRadius: "4px", border: "1px solid whitesmoke", backgroundColor: "rgb(40 177 29 / 39%)", padding: "4px 12px", marginTop: "2rem" }}>
+            <div><CheckCircleIcon /></div>
+            <div><Typography variant="h6">
+              Account created successfully!
+            </Typography>
+            <Typography variant="subtitle1">
+              Redirecting to login page...
+            </Typography></div>
+            
+          </div>)}
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 5,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -162,19 +169,7 @@ export default function SignUp({ user }: { user: any }) {
             </Grid>
           </Box>
           {message && <div>{message}</div>}
-        </Box>
-      ) : (
-        accountCreated && (
-          <>
-            <Typography variant="h6" color="primary">
-              Account created successfully!
-            </Typography>
-            <Typography variant="subtitle1">
-              Redirecting to login page...
-            </Typography>
-          </>
-        )
-      )}
+        </Box> 
     </Container>
   );
 }

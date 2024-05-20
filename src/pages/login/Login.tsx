@@ -32,7 +32,7 @@ export default function Login({ user, setUser }: { user: any; setUser: any }) {
 
     try {
       const response = await fetch(
-        "https://scaling-parakeet-wjjwvjp55prf55x-8080.app.github.dev/user",
+        "https://fictional-space-enigma-rp6qq77vg5jfpq4j-8080.app.github.dev/login",
         {
           method: "POST",
           headers: {
