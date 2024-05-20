@@ -15,6 +15,7 @@ export default function SignUp({ user }: { user: any }) {
   const navigate = useNavigate();
   const [accountCreated, setAccountCreated] = React.useState(false);
   const [showUI, setShowUI] = React.useState(true);
+  const [message, setMessage] = React.useState("");
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,7 +30,7 @@ export default function SignUp({ user }: { user: any }) {
 
     try {
       const response = await fetch(
-        "https://scaling-parakeet-wjjwvjp55prf55x-8080.app.github.dev/user",
+        "https://opulent-giggle-rvvj7vq6vwgfwxj7-8080.app.github.dev/user",
         {
           method: "POST",
           headers: {
@@ -43,26 +44,14 @@ export default function SignUp({ user }: { user: any }) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        const result = await response.json();
-        console.log(result);
-        if (result.message === "Success!") {
-          setTimeout(() => {
-            setAccountCreated(true);
-            setShowUI(false);
-          }, 2000);
-        }
-      } else {
-        // It's not JSON, treat it as text
-        const resultText = await response.text();
-        console.log(resultText);
-        if (resultText.trim() === "Success!") {
-          setTimeout(() => {
-            setAccountCreated(true);
-            setShowUI(false);
-          }, 2000);
-        }
+      const result = await response.text();
+      console.log(result);
+      setMessage(result);
+      if (result === "Success!") {
+        setAccountCreated(true);
+        setTimeout(() => {
+          setShowUI(false);
+        }, 2000); // Show success message for 2 seconds
       }
     } catch (error) {
       console.error("There was a problem with the fetch operation: ", error);
@@ -70,10 +59,12 @@ export default function SignUp({ user }: { user: any }) {
   };
 
   React.useEffect(() => {
-    if (user) {
-      navigate("/login");
+    if (!showUI || user) {
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000); // Redirect to login page after 1 second
     }
-  }, [user]);
+  }, [user, showUI]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -170,13 +161,19 @@ export default function SignUp({ user }: { user: any }) {
               </Grid>
             </Grid>
           </Box>
+          {message && <div>{message}</div>}
         </Box>
       ) : (
         accountCreated && (
-          <Typography variant="h6" color="primary">
-            Account created successfully!
-          </Typography>
-        ) // Display success message
+          <>
+            <Typography variant="h6" color="primary">
+              Account created successfully!
+            </Typography>
+            <Typography variant="subtitle1">
+              Redirecting to login page...
+            </Typography>
+          </>
+        )
       )}
     </Container>
   );
